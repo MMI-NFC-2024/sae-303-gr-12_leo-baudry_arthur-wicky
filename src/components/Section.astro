@@ -3,17 +3,21 @@
 const { title } = Astro.props;
 ---
 
-<section class="panel">
-  <div class="section-container">
-    {title && <h1 class="section-title">{title}</h1>}
+<section class="panel w-screen h-screen flex-shrink-0 flex justify-center items-center px-12 py-1 box-border max-[800px]:px-6 max-[600px]:px-4 max-[800px]:py-1">
+  <div class="w-full h-full flex flex-col">
+    {title && (
+      <h1 class="text-center text-[2.5rem] mb-4 mt-8 flex-shrink-0 max-[1200px]:text-[2rem] max-[800px]:text-[1.75rem] max-[800px]:mt-5 max-[800px]:mb-10 max-[600px]:text-[1.4rem] max-[600px]:mt-8 max-[600px]:mb-2">
+        {title}
+      </h1>
+    )}
 
-    <div class="section-grid-3-col">
-      <div class="grid-col">
+    <div class="flex-grow grid grid-cols-[4fr_3fr_3fr] gap-2 w-full h-full overflow-hidden max-[800px]:grid-cols-1 max-[800px]:gap-2 max-[800px]:overflow-y-auto max-[800px]:overflow-x-hidden">
+      <div class="flex flex-col justify-center gap-2 leading-relaxed text-[0.95rem] max-[800px]:justify-start">
         <slot name="left" />
       </div>
-      <!-- MODIFICATION : Retirer le div grid-col-center wrapper -->
+      <!-- Slot par défaut - prend la colonne du milieu en desktop -->
       <slot />
-      <div class="grid-col">
+      <div class="flex flex-col justify-center gap-2 leading-relaxed text-[0.95rem] max-[800px]:justify-start">
         <slot name="right" />
       </div>
     </div>

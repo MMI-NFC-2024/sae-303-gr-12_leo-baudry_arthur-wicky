@@ -1,0 +1,212 @@
+<div class="map-wrapper w-full h-full flex flex-col">
+  <div class="flex gap-4 mb-3 flex-wrap max-[800px]:justify-center">
+    <select id="profession-map" class="map-select">
+      <option value="Kinésithérapeutes">Kinésithérapeutes</option>
+      <option value="Infirmières">Infirmières</option>
+      <option value="Sages_femmes">Sages-femmes</option>
+      <option value="Médecins_Généralistes">Médecins Généralistes</option>
+    </select>
+    <select id="annee-map" class="map-select">
+      <option value="2022">2022</option>
+      <option value="2016">2016</option>
+    </select>
+  </div>
+  <div id="myplot" class="cursor-pointer max-[800px]:flex max-[800px]:justify-center" title="Cliquez pour agrandir"></div>
+</div>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import * as d3 from "d3-geo";
+  import { zoom, zoomIdentity } from "d3-zoom";
+  import { select } from "d3-selection";
+
+  let geoData: any, data22: any, data16: any;
+  const prof = document.getElementById('profession-map') as HTMLSelectElement;
+  const year = document.getElementById('annee-map') as HTMLSelectElement;
+  
+  type ProfessionKey = 'Kinésithérapeutes' | 'Infirmières' | 'Sages_femmes' | 'Médecins_Généralistes';
+  type YearKey = '2022' | '2016';
+  
+  const CFG = {
+    cols: {
+      '2022': { 
+        Kinésithérapeutes: "APL aux kinésithérapeutes", 
+        Infirmières: "APL aux infirmières", 
+        Sages_femmes: "APL aux sages-femmes", 
+        Médecins_Généralistes: "APL aux médecins généralistes" 
+      },
+      '2016': { 
+        Kinésithérapeutes: "APL aux masseurs- kinésithérapeutes de 65 ans et moins", 
+        Infirmières: "APL aux infirmiers", 
+        Sages_femmes: "APL aux sages-femmes de moins de 65 ans", 
+        Médecins_Généralistes: "APL aux médecins généralistes" 
+      }
+    },
+    dom: { 
+      Kinésithérapeutes: 150, 
+      Infirmières: 200, 
+      Sages_femmes: 50, 
+      Médecins_Généralistes: 7 
+    } as Record<ProfessionKey, number>,
+    lbl: { 
+      Kinésithérapeutes: "Kinésithérapeutes", 
+      Infirmières: "Infirmières", 
+      Sages_femmes: "Sages-femmes", 
+      Médecins_Généralistes: "Médecins Généralistes" 
+    } as Record<ProfessionKey, string>,
+    sz: { 
+      s: [450, 580, 530] as [number, number, number], 
+      l: [1200, 1400, 1190] as [number, number, number]
+    }
+  };
+  
+  Promise.all([
+    '/data/communes_fc.json', 
+    '/data/data_fc.json', 
+    '/data/APL_communes_2016.json'
+  ].map(u => fetch(u).then(r => r.json())))
+    .then(([geo, d22, d16]) => { 
+      geoData = geo; 
+      data22 = d22; 
+      data16 = d16; 
+      render(); 
+      setupModal(); 
+    });
+  
+  const prepGeo = (p: ProfessionKey, y: YearKey) => {
+    const data = y === "2022" ? data22 : data16;
+    const colName = CFG.cols[y][p];
+    const aplMap = new Map(
+      data.map((d: any) => [
+        String(d["Code commune INSEE"]).padStart(5, '0'), 
+        +(String(d[colName] || "").trim().replace(",", ".")) || 0
+      ])
+    );
+    return { 
+      ...geoData, 
+      features: geoData.features.map((f: any) => ({ 
+        ...f, 
+        properties: { 
+          ...f.properties, 
+          apl_value: aplMap.get(String(f.properties.code).padStart(5, '0')) || 0 
+        }
+      }))
+    };
+  };
+  
+  const createMap = (mode: 's' | 'l' = 's') => {
+    if (!geoData) return null;
+    const p = prof.value as ProfessionKey;
+    const y = year.value as YearKey;
+    const [w, h, mh] = CFG.sz[mode];
+    const geo = prepGeo(p, y);
+    
+    const plot = Plot.plot({
+      width: w, 
+      height: h,
+      title: `Accessibilité aux soins en Franche-Comté (${y})${mode === 'l' ? ' - Utilisez la molette pour zoomer' : ''}`,
+      caption: "Source : CartoSanté / AtlasSanté — Indice d'accessibilité aux professionnels de santé par commune.",
+      projection: d3.geoConicConformal().fitSize([w * 0.95, mh], geo),
+      color: { 
+        type: "linear", 
+        domain: [0, CFG.dom[p]], 
+        scheme: "Blues", 
+        legend: true, 
+        label: `APL ${CFG.lbl[p]} ${y} (indice de 0 à ${CFG.dom[p]})`, 
+        ticks: mode === 'l' ? 10 : 6 
+      },
+      marks: [
+        Plot.geo(geo, { 
+          fill: (d: any) => d.properties.apl_value, 
+          stroke: "#333", 
+          strokeWidth: mode === 'l' ? 0.8 : 0.5, 
+          title: (d: any) => `${d.properties.nom}\nAPL ${CFG.lbl[p]} (${y}) : ${d.properties.apl_value.toFixed(1)}`, 
+          tip: true 
+        })
+      ]
+    });
+    
+    // Activer le zoom en mode large
+    if (mode === 'l') {
+      const svg = plot.querySelector('svg');
+      if (svg) {
+        const svgSelection = select(svg);
+        const g = svgSelection.select('g');
+        const zoomBehavior = zoom()
+          .scaleExtent([0.5, 8])
+          .on('zoom', (event: any) => g.attr('transform', event.transform));
+        svgSelection.call(zoomBehavior as any);
+        svgSelection.on('dblclick.zoom', () => {
+          svgSelection.transition().duration(750).call(zoomBehavior.transform as any, zoomIdentity);
+        });
+      }
+    }
+    
+    return plot;
+  };
+  
+  const render = () => { 
+    const div = document.querySelector("#myplot"); 
+    if (div) {
+      div.innerHTML = ""; 
+      const plot = createMap('s');
+      if (plot) div.append(plot);
+    }
+  };
+  
+  const setupModal = () => {
+    const myplot = document.querySelector("#myplot");
+    const modal = document.getElementById('map-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const content = document.querySelector('.map-modal-content-inner');
+    const overlay = document.querySelector('.map-modal-overlay');
+    
+    const closeModal = () => { 
+      if (modal) {
+        modal.style.display = "none"; 
+        document.body.style.overflow = ""; 
+        if (content) content.innerHTML = ""; 
+      }
+    };
+    
+    // Ouvrir la modal
+    if (myplot && modal && content) {
+      myplot.addEventListener("click", (e) => { 
+        e.stopPropagation(); 
+        content.innerHTML = ""; 
+        const largeMap = createMap('l');
+        if (largeMap) content.appendChild(largeMap);
+        modal.style.display = "flex"; 
+        document.body.style.overflow = "hidden"; 
+      });
+    }
+    
+    // Fermer avec bouton
+    if (closeBtn) {
+      closeBtn.addEventListener("click", (e) => { 
+        e.stopPropagation(); 
+        closeModal(); 
+      });
+    }   
+    
+    // Fermer avec overlay
+    if (overlay) {
+      overlay.addEventListener("click", (e) => { 
+        e.stopPropagation(); 
+        closeModal(); 
+      });
+    }
+    
+    // Fermer avec Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal && modal.style.display === "flex") {
+        e.stopImmediatePropagation();
+        closeModal();
+      }
+    });
+  };
+  
+  // Événements de changement
+  if (prof) prof.addEventListener("change", render);
+  if (year) year.addEventListener("change", render);
+</script>

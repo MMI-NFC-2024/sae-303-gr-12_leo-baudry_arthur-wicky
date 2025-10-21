@@ -1,0 +1,74 @@
+---
+// src/components/Section.astro
+const { title } = Astro.props;
+---
+
+<section class="panel">
+  <div class="section-container">
+    {title && <h1 class="section-title">{title}</h1>}
+
+    <div class="section-grid-3-col">
+      <div class="grid-col">
+        <slot name="left" />
+      </div>
+      <div class="grid-col grid-col-center">
+        <slot />
+      </div>
+      <div class="grid-col">
+        <slot name="right" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .panel {
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 3rem;
+    box-sizing: border-box;
+  }
+
+  .section-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    margin-top: 3rem; /* Baisse le titre pour éviter les flèches */
+    flex-shrink: 0;
+  }
+
+  .section-grid-3-col {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 4fr 3fr 3fr;
+    gap: 2rem;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .grid-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  /* La colonne centrale peut s'étendre sur 2 colonnes si elle a la classe span-two-cols */
+  .grid-col-center:has(.span-two-cols) {
+    grid-column: span 2;
+  }
+</style>

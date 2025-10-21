@@ -1,0 +1,14 @@
+---
+// src/components/SectionFullWidth.astro
+const { title } = Astro.props;
+---
+
+<section class="panel">
+  <div class="section-container">
+    {title && <h1 class="section-title">{title}</h1>}
+    
+    <div class="section-content-full">
+      <slot />
+    </div>
+  </div>
+</section>

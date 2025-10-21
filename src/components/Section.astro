@@ -11,9 +11,8 @@ const { title } = Astro.props;
       <div class="grid-col">
         <slot name="left" />
       </div>
-      <div class="grid-col grid-col-center">
-        <slot />
-      </div>
+      <!-- MODIFICATION : Retirer le div grid-col-center wrapper -->
+      <slot />
       <div class="grid-col">
         <slot name="right" />
       </div>

@@ -1,8 +1,8 @@
 ---
-// On importe les composants nécessaires
 import Layout from "../layouts/Layout.astro";
 import PlotFigure from "../components/PlotFigure.astro";
 import Section from "../components/Section.astro";
+import SectionFullWidth from "../components/SectionFullWidth.astro";
 
 import penguins from "../assets/penguins.json";
 import * as Plot from "@observablehq/plot";
@@ -10,37 +10,61 @@ import * as Plot from "@observablehq/plot";
 
 <Layout>
   <div class="scroll-container">
-  <div class="horizontal-sections">
-    <!-- Page 1 : Introduction au projet -->
-    <Section title="Santé en Franche-Comté : visualiser l'accès aux professionnels">
-      <p>Scrollez ou glissez pour voir l'effet slider</p>
-    </Section>
+    <div class="horizontal-sections">
+      <!-- Page 1 : Accueil simplifié avec animation GSAP -->
+      <SectionFullWidth title="Santé en Franche-Comté : visualiser l'accès aux professionnels">
+        <div class="home-intro">
+          <p class="intro-text">Ce site web explore l'accès aux professionnels de santé en Franche-Comté à travers des visualisations interactives, afin de comprendre où l'offre est la plus ou la moins accessible pour les habitants.</p>
+          
+          <p class="intro-text">Il combine deux angles complémentaires: la quantité de professionnels (médecins généralistes, infirmiers, kinésithérapeutes, sages-femmes) et l'accessibilité potentielle localisée, pour lire l'offre non seulement en volumes mais aussi en capacité réelle d'accès.</p>
+          
+          <p class="intro-text">Enfin, il compare ces indicateurs avant et après la période Covid, ainsi qu'entre professions, pour mettre en évidence les évolutions et contrastes territoriaux qui orientent le diagnostic et les pistes d'action.</p>
+        </div>
+      </SectionFullWidth>
 
-    <!-- Page 2 : Carte dans colonne 1, Définition et explications dans colonne 2 -->
-    <Section title="Données des Pingouins">
-      <div slot="left">
-        <!-- Graphique -->
-        <PlotFigure
-          options={{
-            marks: [Plot.dot(penguins, {
-              x: "culmen_length_mm",
-              y: "culmen_depth_mm",
-              stroke: "species",
-            })],
-          }}
-        />
-      </div>
-      <!-- Texte -->
-      <div class="span-two-cols">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt 
-           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-           ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
-          nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
-          deserunt mollit anim id est laborum.</p>
-      </div>
-    </Section>
+      <!-- Pages 2-5 : AVEC GRILLE avec Section -->
+      <Section title="Données des Pingouins">
+        <div slot="left">
+          <PlotFigure
+            options={{
+              marks: [Plot.dot(penguins, {
+                x: "culmen_length_mm",
+                y: "culmen_depth_mm",
+                stroke: "species",
+              })],
+            }}
+          />
+        </div>
+        
+        <div class="span-two-cols">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+          <p>Duis aute irure dolor in reprehenderit...</p>
+        </div>
+      </Section>
 
+      <!-- Page 2 : Données des Pingouins -->
+      <Section title="Données des Pingouins">
+        <div slot="left">
+          <PlotFigure
+            options={{
+              marks: [Plot.dot(penguins, {
+                x: "culmen_length_mm",
+                y: "culmen_depth_mm",
+                stroke: "species",
+              })],
+            }}
+          />
+        </div>
+        
+        <div class="span-two-cols">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt 
+             ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
+             ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
+            deserunt mollit anim id est laborum.</p>
+        </div>
+      </Section>
       <!-- Page 3 : Même structure -->
       <Section title="Analyse">
         <div slot="left">
@@ -80,7 +104,6 @@ import * as Plot from "@observablehq/plot";
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
   document.addEventListener("DOMContentLoaded", () => {
-    // Attendre que le DOM soit complètement rendu
     requestAnimationFrame(() => {
       const sections = gsap.utils.toArray(".panel");
       const container = document.querySelector(".horizontal-sections");
@@ -99,6 +122,18 @@ import * as Plot from "@observablehq/plot";
       }
 
       console.log(`${sections.length} sections détectées`);
+
+      // === ANIMATION DE LA PAGE D'ACCUEIL ===
+      const introTexts = gsap.utils.toArray(".intro-text");
+      
+      gsap.from(introTexts, {
+        opacity: 0,
+        y: 50,
+        duration: 1.2,
+        stagger: 0.3,
+        ease: "power2.out",
+        delay: 0.5
+      });
 
       // Fonction pour mettre à jour les indicateurs de page
       function updatePageIndicators(currentIndex) {
@@ -126,14 +161,11 @@ import * as Plot from "@observablehq/plot";
             const currentSection = Math.round(self.progress * (sections.length - 1));
             prevBtn.disabled = currentSection === 0;
             nextBtn.disabled = currentSection === sections.length - 1;
-            
-            // Mettre à jour les indicateurs de page
             updatePageIndicators(currentSection);
           },
         },
       });
 
-      // Rafraîchir ScrollTrigger après initialisation
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, 100);

@@ -1,19 +1,176 @@
 ---
-import "../styles/global.css";
-import Header from "../components/Header.astro";
----
+import '../styles/global.css';
+import Header from '../components/Header.astro';
 
-<!doctype html>
-<html lang="en">
+const baseUrl = "https://votre-domaine.fr"; // À remplacer par ton vrai domaine
+const pageUrl = baseUrl;
+const siteName = "Santé en Franche-Comté";
+const title = "Accessibilité aux soins en Franche-Comté | Visualisation interactive des professionnels de santé";
+const description = "Explorez l'accès aux professionnels de santé en Franche-Comté (2016-2022) : cartes interactives APL, densité médicale par commune, statistiques médecins, infirmiers, kinésithérapeutes et sages-femmes. Analyse pré et post-COVID.";
+const image = "/og-image.jpg";
+const keywords = "santé Franche-Comté, accessibilité soins, APL, professionnels santé, médecins généralistes Besançon, infirmiers Montbéliard, kinésithérapeutes Belfort, sages-femmes Doubs, carte santé interactive, densité médicale, déserts médicaux, COVID santé, 2016 2022, données santé France, visualisation données médicales";
+---
+<!DOCTYPE html>
+<html lang="fr">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <!-- Encodage & viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta -->
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <meta name="generator" content={Astro.generator}>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="keywords" content={keywords}>
+    <meta name="author" content="Léo Baudry, Arthur Wicky">
+    <meta name="language" content="French">
+    <meta name="geo.region" content="FR-BFC">
+    <meta name="geo.placename" content="Franche-Comté, France">
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:image" content={`${baseUrl}${image}`}>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content={pageUrl}>
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content={siteName}>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={`${baseUrl}${image}`}>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={pageUrl}>
+
+    <!-- Favicon et icônes -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#FF8C42">
+
+    <!-- Schema.org - WebSite -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Santé en Franche-Comté",
+        "alternateName": "Accessibilité aux soins en Franche-Comté",
+        "url": "${baseUrl}",
+        "description": "${description}",
+        "inLanguage": "fr-FR",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Léo Baudry",
+            "affiliation": {
+              "@type": "EducationalOrganization",
+              "name": "BUT MMI Montbéliard"
+            }
+          },
+          {
+            "@type": "Person",
+            "name": "Arthur Wicky",
+            "affiliation": {
+              "@type": "EducationalOrganization",
+              "name": "BUT MMI Montbéliard"
+            }
+          }
+        ],
+        "publisher": {
+          "@type": "EducationalOrganization",
+          "name": "BUT MMI Montbéliard",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Montbéliard",
+            "addressRegion": "Bourgogne-Franche-Comté",
+            "addressCountry": "FR"
+          }
+        }
+      }
+    </script>
+
+    <!-- Schema.org - Dataset -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "Accessibilité aux soins en Franche-Comté (2016-2022)",
+        "description": "Données sur l'accessibilité potentielle localisée (APL) et la densité des professionnels de santé libéraux en Franche-Comté : médecins généralistes, infirmiers, kinésithérapeutes et sages-femmes",
+        "url": "${baseUrl}",
+        "keywords": ["APL", "accessibilité aux soins", "Franche-Comté", "professionnels de santé", "densité médicale", "2016", "2022", "COVID-19"],
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "temporalCoverage": "2016/2022",
+        "spatialCoverage": {
+          "@type": "Place",
+          "name": "Franche-Comté",
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 47.0,
+            "longitude": 6.0
+          },
+          "containedInPlace": {
+            "@type": "Country",
+            "name": "France"
+          }
+        },
+        "creator": [
+          {
+            "@type": "Person",
+            "name": "Léo Baudry"
+          },
+          {
+            "@type": "Person",
+            "name": "Arthur Wicky"
+          }
+        ],
+        "distribution": [
+          {
+            "@type": "DataDownload",
+            "encodingFormat": "application/json",
+            "contentUrl": "${baseUrl}/data/data_fc.json"
+          }
+        ],
+        "isBasedOn": [
+          {
+            "@type": "Dataset",
+            "name": "CartoSanté / AtlasSanté",
+            "url": "https://cartosante.atlasante.fr"
+          },
+          {
+            "@type": "Dataset",
+            "name": "DREES - Accessibilité potentielle localisée",
+            "url": "https://data.drees.solidarites-sante.gouv.fr"
+          }
+        ]
+      }
+    </script>
+
+    <!-- Schema.org - BreadcrumbList (optionnel mais aide le SEO) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Accueil",
+            "item": "${baseUrl}"
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
-      <Header />
+    <Header />
     <slot />
   </body>
 </html>

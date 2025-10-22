@@ -11,35 +11,45 @@ import ArrowIcon from "../assets/arrow_horizontal.svg?raw";
     class="flex gap-2 justify-self-start max-[768px]:justify-center max-[768px]:gap-1.5 max-[500px]:gap-0.5"
     aria-label="Navigation par pages">
     <button 
-      class="page-btn active w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      class="page-btn active w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
       data-page="0" 
+      data-label="Accueil"
       aria-label="Page 1 : Accueil"
       aria-current="page">
-      1
+      <span class="page-number">1</span>
+      <span class="page-label">Accueil</span>
     </button>
     <button 
-      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
       data-page="1" 
+      data-label="Accessibilité"
       aria-label="Page 2 : Accessibilité aux soins">
-      2
+      <span class="page-number">2</span>
+      <span class="page-label">Accessibilité</span>
     </button>
     <button 
-      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
       data-page="2" 
+      data-label="Répartition"
       aria-label="Page 3 : Répartition des professionnels">
-      3
+      <span class="page-number">3</span>
+      <span class="page-label">Répartition</span>
     </button>
     <button 
-      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
       data-page="3" 
+      data-label="Comparaison"
       aria-label="Page 4 : Comparaison des données">
-      4
+      <span class="page-number">4</span>
+      <span class="page-label">Comparaison</span>
     </button>
     <button 
-      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
       data-page="4" 
+      data-label="Conclusion"
       aria-label="Page 5 : Conclusion">
-      5
+      <span class="page-number">5</span>
+      <span class="page-label">Conclusion</span>
     </button>
   </nav>
 
@@ -86,10 +96,46 @@ import ArrowIcon from "../assets/arrow_horizontal.svg?raw";
     }
   }
 
-  :global(.page-btn.active) {
-    background: rgb(255, 140, 66) !important;
-    backdrop-filter: none !important;
-    border: none !important;
-    color: white;
+  /* Styles pour les boutons de page */
+  :global(.page-btn) {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  /* Label caché par défaut */
+  :global(.page-btn .page-label) {
+    display: none;
+  }
+
+  /* Bouton actif : uniquement au-dessus de 800px */
+  @media (min-width: 801px) {
+    :global(.page-btn.active) {
+      background: rgb(255, 140, 66) !important;
+      backdrop-filter: none !important;
+      border: none !important;
+      color: white;
+      width: auto !important;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+
+    :global(.page-btn.active .page-label) {
+      display: inline;
+    }
+  }
+
+  /* En dessous de 800px : pas de label */
+  @media (max-width: 800px) {
+    :global(.page-btn.active) {
+      background: rgb(255, 140, 66) !important;
+      backdrop-filter: none !important;
+      border: none !important;
+      color: white;
+    }
+
+    :global(.page-btn.active .page-label) {
+      display: none;
+    }
   }
 </style>
+

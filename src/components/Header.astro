@@ -2,23 +2,71 @@
 // src/components/Header.astro
 import ArrowIcon from "../assets/arrow_horizontal.svg?raw";
 ---
-<header class="fixed top-8 left-0 right-0 grid grid-cols-[1fr_auto_1fr] items-center z-[1000] px-12 max-[768px]:flex max-[768px]:flex-col max-[768px]:gap-3 max-[768px]:px-4 max-[768px]:top-4 max-[500px]:px-2 max-[500px]:gap-2">
+<header 
+  class="fixed top-8 left-0 right-0 grid grid-cols-[1fr_auto_1fr] items-center z-[1000] px-12 max-[768px]:flex max-[768px]:flex-col max-[768px]:gap-3 max-[768px]:px-4 max-[768px]:top-4 max-[500px]:px-2 max-[500px]:gap-2"
+  role="banner">
+  
   <!-- Navigation par numéros -->
-  <div class="flex gap-2 justify-self-start max-[768px]:justify-center max-[768px]:gap-1.5 max-[500px]:gap-0.5">
-    <button class="page-btn active w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" data-page="0" aria-label="Page 1">1</button>
-    <button class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" data-page="1" aria-label="Page 2">2</button>
-    <button class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" data-page="2" aria-label="Page 3">3</button>
-    <button class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" data-page="3" aria-label="Page 4">4</button>
-    <button class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" data-page="4" aria-label="Page 5">5</button>
-  </div>
+  <nav 
+    class="flex gap-2 justify-self-start max-[768px]:justify-center max-[768px]:gap-1.5 max-[500px]:gap-0.5"
+    aria-label="Navigation par pages">
+    <button 
+      class="page-btn active w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      data-page="0" 
+      aria-label="Page 1 : Accueil"
+      aria-current="page">
+      1
+    </button>
+    <button 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      data-page="1" 
+      aria-label="Page 2 : Accessibilité aux soins">
+      2
+    </button>
+    <button 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      data-page="2" 
+      aria-label="Page 3 : Répartition des professionnels">
+      3
+    </button>
+    <button 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      data-page="3" 
+      aria-label="Page 4 : Comparaison des données">
+      4
+    </button>
+    <button 
+      class="page-btn w-[38px] h-[38px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white text-[0.9rem] font-medium cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[rgba(50,51,52,0.7)] max-[768px]:w-[32px] max-[768px]:h-[32px] max-[768px]:text-[0.8rem] max-[500px]:w-[24px] max-[500px]:h-[24px] max-[500px]:text-[0.7rem] max-[500px]:rounded-[6px]" 
+      data-page="4" 
+      aria-label="Page 5 : Conclusion">
+      5
+    </button>
+  </nav>
 
   <!-- Boutons flèches -->
-  <div class="flex gap-4 justify-self-center max-[768px]:justify-center max-[768px]:gap-2 max-[500px]:gap-1">
-    <button id="prev-btn" class="arrow-btn h-[38px] w-[76px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white cursor-pointer flex items-center justify-center transition-[background] duration-200 hover:bg-[rgba(50,51,52,0.7)] disabled:opacity-30 disabled:cursor-not-allowed max-[768px]:h-[32px] max-[768px]:w-[64px] max-[500px]:h-[24px] max-[500px]:w-[48px] max-[500px]:rounded-[6px]" aria-label="Section précédente" style="transform: scaleX(-1);">
-      <Fragment set:html={ArrowIcon} />
+  <div 
+    class="flex gap-4 justify-self-center max-[768px]:justify-center max-[768px]:gap-2 max-[500px]:gap-1"
+    role="navigation"
+    aria-label="Navigation séquentielle">
+    <button 
+      id="prev-btn" 
+      class="arrow-btn h-[38px] w-[76px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white cursor-pointer flex items-center justify-center transition-[background] duration-200 hover:bg-[rgba(50,51,52,0.7)] disabled:opacity-30 disabled:cursor-not-allowed max-[768px]:h-[32px] max-[768px]:w-[64px] max-[500px]:h-[24px] max-[500px]:w-[48px] max-[500px]:rounded-[6px]" 
+      aria-label="Page précédente"
+      aria-disabled="true"
+      disabled
+      style="transform: scaleX(-1);">
+      <span aria-hidden="true">
+        <Fragment set:html={ArrowIcon} />
+      </span>
     </button>
-    <button id="next-btn" class="arrow-btn h-[38px] w-[76px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white cursor-pointer flex items-center justify-center transition-[background] duration-200 hover:bg-[rgba(50,51,52,0.7)] disabled:opacity-30 disabled:cursor-not-allowed max-[768px]:h-[32px] max-[768px]:w-[64px] max-[500px]:h-[24px] max-[500px]:w-[48px] max-[500px]:rounded-[6px]" aria-label="Section suivante">
-      <Fragment set:html={ArrowIcon} />
+    <button 
+      id="next-btn" 
+      class="arrow-btn h-[38px] w-[76px] bg-[rgba(36,37,38,0.5)] backdrop-blur-[10px] border border-white/10 rounded-[10px] text-white cursor-pointer flex items-center justify-center transition-[background] duration-200 hover:bg-[rgba(50,51,52,0.7)] disabled:opacity-30 disabled:cursor-not-allowed max-[768px]:h-[32px] max-[768px]:w-[64px] max-[500px]:h-[24px] max-[500px]:w-[48px] max-[500px]:rounded-[6px]" 
+      aria-label="Page suivante"
+      aria-disabled="false">
+      <span aria-hidden="true">
+        <Fragment set:html={ArrowIcon} />
+      </span>
     </button>
   </div>
 </header>

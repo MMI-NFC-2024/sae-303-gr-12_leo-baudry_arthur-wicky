@@ -3,11 +3,15 @@
 const { title } = Astro.props;
 ---
 
-<section class="panel">
-  <div class="section-container">
-    {title && <h1 class="section-title">{title}</h1>}
-    
-    <div class="section-content-full">
+<section class="panel w-screen h-screen flex-shrink-0 flex justify-center items-center px-12 py-1 box-border max-[800px]:px-6 max-[600px]:px-4 max-[500px]:px-3">
+  <div class="w-full h-full flex flex-col">
+    {title && (
+      <h1 class="text-center text-[2rem] mb-4 mt-20 flex-shrink-0 max-[1200px]:text-[1.75rem] max-[1024px]:text-[1.6rem] max-[1024px]:mb-3 max-[1024px]:mt-16 max-[800px]:text-[1.4rem] max-[800px]:mt-14 max-[800px]:mb-3 max-[600px]:text-[1.2rem] max-[600px]:mt-12 max-[600px]:mb-2">
+        {title}
+      </h1>
+    )}
+
+    <div class="flex-grow w-full h-full overflow-hidden max-[800px]:overflow-y-auto max-[800px]:overflow-x-hidden">
       <slot />
     </div>
   </div>

@@ -1,0 +1,101 @@
+---
+// src/components/BarchartProfessionnelsTotal.astro
+---
+
+<div class="chart-wrapper w-full h-full flex flex-col">
+  <h3 class="text-[1rem] font-semibold text-black mb-2 text-center max-[1200px]:text-[0.9rem] max-[800px]:text-[0.8rem] max-[800px]:mb-1">
+    Totaux des médecins de la région Franche-Comté en 2022
+  </h3>
+  <div id="chart-totaux-prof" class="flex justify-center"></div>
+</div>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import * as d3 from "d3";
+
+  const pad5 = (code: string | number): string => String(code).padStart(5, '0');
+
+  Promise.all([
+    fetch('/data/tableau_densite.json').then(r => r.json())
+  ]).then(([tableau_densite]) => {
+    const prefixes = ["25", "39", "70", "90"];
+    const data_fc_densite = tableau_densite.filter((d: any) => {
+      const codePadded = pad5(d["Code"]);
+      return prefixes.some((p: string) => codePadded.startsWith(p));
+    });
+
+    const totaux_professions = [
+      {
+        profession: "Infirmiers",
+        professionKey: "Infirmiers",
+        total: d3.sum(data_fc_densite, (d: any) => +d["Nbre d'infirmiers lib. au 31/12 2022"] || 0)
+      },
+      {
+        profession: "Kinési-\nthérapeutes",
+        professionKey: "Kinésithérapeutes",
+        total: d3.sum(data_fc_densite, (d: any) => +d["Nbre de kinés lib. au 31/12 2022"] || 0)
+      },
+      {
+        profession: "Médecins\ngénéralistes",
+        professionKey: "Médecins généralistes",
+        total: d3.sum(data_fc_densite, (d: any) => +d["Nbre de généralistes lib. au 31/12 2022"] || 0)
+      },
+      {
+        profession: "Sages-femmes",
+        professionKey: "Sages-femmes",
+        total: d3.sum(data_fc_densite, (d: any) => +d["Nbre de sages-femmes lib. au 31/12 2022"] || 0)
+      }
+    ];
+
+    const colorScale = {
+      "Infirmiers": "#4472C4",
+      "Kinésithérapeutes": "#FFC000",
+      "Médecins généralistes": "#ED7D31",
+      "Sages-femmes": "#70AD47"
+    };
+
+    const plot = Plot.plot({
+      width: 380,
+      height: 280,
+      marginLeft: 50,
+      marginBottom: 70,
+      x: {
+        label: null,
+        tickRotate: 0,
+        lineWidth: 80
+      },
+      y: {
+        label: "↑ Total",
+        grid: true,
+        labelAnchor: "center"
+      },
+      color: {
+        domain: Object.keys(colorScale),
+        range: Object.values(colorScale),
+        legend: true
+      },
+      marks: [
+        Plot.barY(totaux_professions, {
+          x: "profession",
+          y: "total",
+          fill: (d: any) => colorScale[d.professionKey as keyof typeof colorScale],
+          tip: true,
+          title: (d: any) => `${d.professionKey}: ${d.total.toLocaleString()}`
+        }),
+        Plot.ruleY([0])
+      ]
+    });
+
+    const container = document.querySelector("#chart-totaux-prof");
+    if (container) {
+      container.innerHTML = "";
+      container.appendChild(plot);
+    }
+  });
+</script>
+
+<style>
+  #chart-totaux-prof {
+    min-height: 280px;
+  }
+</style>

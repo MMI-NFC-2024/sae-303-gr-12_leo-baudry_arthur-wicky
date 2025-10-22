@@ -1,0 +1,150 @@
+---
+// src/components/BarchartAplTotal.astro
+---
+
+<div class="chart-wrapper w-full h-full flex flex-col">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-2 max-[800px]:mb-1">
+        <h3 class="text-[1rem] font-semibold text-black mb-1.5 md:mb-0 md:text-left text-center max-[1200px]:text-[0.9rem] max-[800px]:text-[0.8rem] max-[800px]:mb-1">
+            APL des différents corps de métiers médicaux selon l'année (2016-2022)
+        </h3>
+        <div class="flex justify-center md:justify-end">
+            <select id="year-selector-apl" class="map-select px-3 py-1.5 text-sm">
+                <option value="2022">2022</option>
+                <option value="2016">2016</option>
+            </select>
+        </div>
+    </div>
+    <div id="chart-apl-total" class="flex justify-center"></div>
+</div>
+
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import * as d3 from "d3";
+
+  let data_fc: any[] = [];
+  let data_fc_2016: any[] = [];
+  const yearSelector = document.getElementById('year-selector-apl') as HTMLSelectElement;
+
+  Promise.all([
+    fetch('/data/data_fc.json').then(r => r.json()),
+    fetch('/data/APL_communes_2016.json').then(r => r.json())
+  ]).then(([data22, data16]) => {
+    data_fc = data22;
+    data_fc_2016 = data16;
+
+    render('2022');
+
+    if (yearSelector) {
+      yearSelector.addEventListener('change', () => {
+        render(yearSelector.value);
+      });
+    }
+  });
+
+  function render(selectedYear: string) {
+    let data = selectedYear === "2022" ? data_fc : data_fc_2016;
+
+    // FILTRER pour Franche-Comté si 2016
+    if (selectedYear === "2016") {
+      const prefixes = ["25", "39", "70", "90"];
+      data = data.filter((d: any) => {
+        const code = String(d["Code commune INSEE"]).padStart(5, '0');
+        return prefixes.some((p: string) => code.startsWith(p));
+      });
+      console.log(`Données 2016 filtrées pour FC: ${data.length} communes`);
+    }
+
+    const totaux_apl = [
+      {
+        profession: "Infirmiers",
+        professionKey: "Infirmiers",
+        total: d3.sum(data, (d: any) => {
+          const key = selectedYear === "2022" ? "APL aux infirmières" : "APL aux infirmiers";
+          return +(d[key]?.trim().replace(",", ".") || 0);
+        })
+      },
+      {
+        profession: "Kinési-\nthérapeutes",
+        professionKey: "Kinésithérapeutes",
+        total: d3.sum(data, (d: any) => {
+          const key = selectedYear === "2022" 
+            ? "APL aux kinésithérapeutes" 
+            : "APL aux masseurs- kinésithérapeutes de 65 ans et moins";
+          return +(d[key]?.trim().replace(",", ".") || 0);
+        })
+      },
+      {
+        profession: "Médecins\ngénéralistes",
+        professionKey: "Médecins généralistes",
+        total: d3.sum(data, (d: any) => {
+          const key = "APL aux médecins généralistes";
+          return +(d[key]?.trim().replace(",", ".") || 0);
+        })
+      },
+      {
+        profession: "Sages-femmes",
+        professionKey: "Sages-femmes",
+        total: d3.sum(data, (d: any) => {
+          const key = selectedYear === "2022"
+            ? "APL aux sages-femmes"
+            : "APL aux sages-femmes de moins de 65 ans";
+          return +(d[key]?.trim().replace(",", ".") || 0);
+        })
+      }
+    ];
+
+    console.log(`Totaux APL ${selectedYear}:`, totaux_apl);
+
+    const colorScale = {
+      "Infirmiers": "#4472C4",
+      "Kinésithérapeutes": "#FFC000",
+      "Médecins généralistes": "#ED7D31",
+      "Sages-femmes": "#70AD47"
+    };
+
+    const plot = Plot.plot({
+      width: 380,
+      height: 280,
+      marginLeft: 70,
+      marginBottom: 70,
+      x: {
+        label: null,
+        tickRotate: 0,
+        lineWidth: 80
+      },
+      y: {
+        label: "↑ Total",
+        grid: true,
+        labelAnchor: "center"
+      },
+      color: {
+        domain: Object.keys(colorScale),
+        range: Object.values(colorScale),
+        legend: true
+      },
+      marks: [
+        Plot.barY(totaux_apl, {
+          x: "profession",
+          y: "total",
+          fill: (d: any) => colorScale[d.professionKey as keyof typeof colorScale],
+          tip: true,
+          title: (d: any) => `${d.professionKey}: ${d.total.toLocaleString()}`
+        }),
+        Plot.ruleY([0])
+      ]
+    });
+
+    const container = document.querySelector("#chart-apl-total");
+    if (container) {
+      container.innerHTML = "";
+      container.appendChild(plot);
+    }
+  }
+</script>
+
+<style>
+  #chart-apl-total {
+    min-height: 280px;
+  }
+</style>

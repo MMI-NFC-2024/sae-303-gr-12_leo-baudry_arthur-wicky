@@ -1,0 +1,247 @@
+<div class="leaflet-wrapper w-full h-full flex flex-col">
+  <div class="flex gap-4 mb-3 flex-wrap max-[800px]:justify-center">
+    <select id="profession-leaflet" class="map-select">
+      <option value="Kinésithérapeutes">Kinésithérapeutes</option>
+      <option value="Infirmières">Infirmières</option>
+      <option value="Sages-femmes">Sages-femmes</option>
+      <option value="Médecins généralistes">Médecins généralistes</option>
+      <option value="Total">Total</option>
+    </select>
+  </div>
+  <div id="map-leaflet-small" class="cursor-pointer" title="Cliquez pour agrandir"></div>
+</div>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  delete (L.Icon.Default.prototype as any)._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  });
+
+  type ProfessionKey = 'Kinésithérapeutes' | 'Infirmières' | 'Sages-femmes' | 'Médecins généralistes' | 'Total';
+
+  let mapSmall: L.Map;
+  let mapLarge: L.Map | null = null;
+  let layerGroupSmall: L.LayerGroup;
+  let layerGroupLarge: L.LayerGroup | null = null;
+  let data_leaflet: any[] = [];
+  let currentProfession: ProfessionKey = 'Kinésithérapeutes';
+
+  const profSelectSmall = document.getElementById('profession-leaflet') as HTMLSelectElement;
+
+  const colors: Record<ProfessionKey, string> = {
+    "Kinésithérapeutes": "#FF6B6B",
+    "Infirmières": "#4ECDC4",
+    "Sages-femmes": "#9B59B6",
+    "Médecins généralistes": "#6C5CE7",
+    "Total": "#2ECC71"
+  };
+
+  const pad5 = (code: string | number): string => String(code).padStart(5, '0');
+
+  Promise.all([
+    '/data/data_fc_enrichi_2022.json',
+    '/data/tableau_densite.json'
+  ].map(u => fetch(u).then(r => r.json())))
+    .then(([data_fc_enrichi_2022, tableau_densite]) => {
+      const prefixes = ["25", "39", "70", "90"];
+      const data_fc_densite = tableau_densite.filter((d: any) => {
+        const codePadded = pad5(d["Code"]);
+        return prefixes.some((p: string) => codePadded.startsWith(p));
+      });
+
+      type ProfessionCounts = {
+        kines: number;
+        infirmiers: number;
+        sages_femmes: number;
+        medecins_generalistes: number;
+      };
+
+      const professionsByCode_2022 = new Map<string, ProfessionCounts>(
+        data_fc_densite.map((d: any) => [
+          pad5(d.Code),
+          {
+            kines: +d["Nbre de kinés lib. au 31/12 2022"] || 0,
+            infirmiers: +d["Nbre d'infirmiers lib. au 31/12 2022"] || 0,
+            sages_femmes: +d["Nbre de sages-femmes lib. au 31/12 2022"] || 0,
+            medecins_generalistes: +d["Nbre de généralistes lib. au 31/12 2022"] || 0
+          }
+        ])
+      );
+
+      data_leaflet = data_fc_enrichi_2022
+        .map((d: any) => {
+          const code = pad5(d["Code commune INSEE"]);
+          const p: ProfessionCounts = professionsByCode_2022.get(code) || { kines: 0, infirmiers: 0, sages_femmes: 0, medecins_generalistes: 0 };
+          return {
+            code,
+            commune: d.Commune,
+            lat: +d.latitude,
+            lon: +d.longitude,
+            population: +d["Population totale 2020"] || 0,
+            kines: p.kines || 0,
+            infirmiers: p.infirmiers || 0,
+            sages_femmes: p.sages_femmes || 0,
+            medecins_generalistes: p.medecins_generalistes || 0
+          };
+        })
+        .filter((d: any) => d.lat && d.lon && !isNaN(d.lat) && !isNaN(d.lon));
+
+      initMapSmall();
+      renderMap(mapSmall, layerGroupSmall, currentProfession);
+      setupModal();
+    });
+
+  const initMapSmall = () => {
+    mapSmall = L.map('map-leaflet-small').setView([47.0, 6.0], 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 18
+    }).addTo(mapSmall);
+    layerGroupSmall = L.layerGroup().addTo(mapSmall);
+
+    const container = mapSmall.getContainer();
+    container.addEventListener('mousedown', (e) => e.stopPropagation());
+    container.addEventListener('touchstart', (e) => e.stopPropagation());
+
+    setTimeout(() => mapSmall.invalidateSize(), 100);
+  };
+
+  const renderMap = (map: L.Map, layerGroup: L.LayerGroup, profession: ProfessionKey) => {
+    layerGroup.clearLayers();
+
+    data_leaflet.forEach((d) => {
+      let value = 0;
+      switch (profession) {
+        case "Kinésithérapeutes": value = d.kines; break;
+        case "Infirmières": value = d.infirmiers; break;
+        case "Sages-femmes": value = d.sages_femmes; break;
+        case "Médecins généralistes": value = d.medecins_generalistes; break;
+        case "Total": value = d.kines + d.infirmiers + d.sages_femmes + d.medecins_generalistes; break;
+      }
+
+      if (value > 0) {
+        const circle = L.circleMarker([d.lat, d.lon], {
+          radius: Math.sqrt(value) * 3,
+          color: colors[profession],
+          fillColor: colors[profession],
+          fillOpacity: 0.6,
+          weight: 1
+        }).addTo(layerGroup);
+
+        let tooltipContent = `<strong>${d.commune}</strong><br>👥 ${d.population.toLocaleString()}<br>`;
+        if (profession === "Total") {
+          tooltipContent += `Kinésithérapeutes ${d.kines} | Infirmières ${d.infirmiers} | Sages-femmes ${d.sages_femmes} | Médecins généralistes ${d.medecins_generalistes}`;
+        } else {
+          tooltipContent += `${value} professionnel(s)`;
+        }
+        circle.bindTooltip(tooltipContent, { sticky: true });
+      }
+    });
+  };
+
+  const setupModal = () => {
+    const mapSmallDiv = document.getElementById('map-leaflet-small');
+    const modal = document.getElementById('leaflet-modal');
+    const closeBtn = document.getElementById('close-leaflet-modal');
+    const content = document.getElementById('leaflet-modal-content');
+    const overlay = modal?.querySelector('.map-modal-overlay');
+
+    const closeModal = () => {
+      if (modal && mapLarge) {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+        mapLarge.remove();
+        mapLarge = null;
+        layerGroupLarge = null;
+        if (content) content.innerHTML = "";
+      }
+    };
+
+    mapSmallDiv?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!modal || !content) return;
+
+      // Créer le HTML de la modal
+      content.innerHTML = `
+        <div class="flex flex-col w-full h-full p-6">
+          <div class="flex gap-4 mb-4 justify-center">
+            <select id="profession-leaflet-large" class="map-select">
+              <option value="Kinésithérapeutes">Kinésithérapeutes</option>
+              <option value="Infirmières">Infirmières</option>
+              <option value="Sages-femmes">Sages-femmes</option>
+              <option value="Médecins généralistes">Médecins généralistes</option>
+              <option value="Total">Total</option>
+            </select>
+          </div>
+          <div id="map-leaflet-large" style="width: 100%; height: calc(100vh - 150px); border-radius: 8px; border: 2px solid #e5e7eb;"></div>
+        </div>
+      `;
+
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+
+      setTimeout(() => {
+        mapLarge = L.map('map-leaflet-large').setView([47.0, 6.0], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap',
+          maxZoom: 18
+        }).addTo(mapLarge);
+        layerGroupLarge = L.layerGroup().addTo(mapLarge);
+
+        const container = mapLarge.getContainer();
+        container.addEventListener('mousedown', (e) => e.stopPropagation());
+        container.addEventListener('touchstart', (e) => e.stopPropagation());
+
+        mapLarge.invalidateSize();
+
+        const profSelectLarge = document.getElementById('profession-leaflet-large') as HTMLSelectElement;
+        if (profSelectLarge) {
+          profSelectLarge.value = currentProfession;
+          profSelectLarge.addEventListener("change", () => {
+            if (mapLarge && layerGroupLarge) {
+              renderMap(mapLarge, layerGroupLarge, profSelectLarge.value as ProfessionKey);
+            }
+          });
+        }
+
+        if (mapLarge && layerGroupLarge) {
+          renderMap(mapLarge, layerGroupLarge, currentProfession);
+        }
+      }, 100);
+    });
+
+    closeBtn?.addEventListener("click", (e) => { e.stopPropagation(); closeModal(); });
+    overlay?.addEventListener("click", (e) => { e.stopPropagation(); closeModal(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal?.style.display === "flex") {
+        e.stopImmediatePropagation();
+        closeModal();
+      }
+    });
+  };
+
+  profSelectSmall?.addEventListener("change", () => {
+    currentProfession = profSelectSmall.value as ProfessionKey;
+    renderMap(mapSmall, layerGroupSmall, currentProfession);
+  });
+</script>
+
+<style>
+  #map-leaflet-small {
+    width: 100%;
+    height: 580px;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+  }
+
+  @media (max-width: 800px) {
+    #map-leaflet-small {
+      height: 400px;
+    }
+  }
+</style>

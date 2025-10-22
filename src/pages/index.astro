@@ -4,10 +4,9 @@ import PlotFigure from "../components/PlotFigure.astro";
 import Section from "../components/Section.astro";
 import SectionFullWidth from "../components/SectionFullWidth.astro";
 import InteractiveMap from "../components/InteractiveMap.astro";
-
-
-import penguins from "../assets/penguins.json";
-import * as Plot from "@observablehq/plot";
+import LeafletMap from "../components/LeafletMap.astro";
+import BarchartProfessionnelsTotal from "../components/BarchartProfessionnelsTotal.astro";
+import BarchartAplTotal from "../components/BarchartAplTotal.astro";
 ---
 
 
@@ -15,121 +14,297 @@ import * as Plot from "@observablehq/plot";
   <div class="scroll-container">
     <div class="horizontal-sections">
     <!-- Page 1 : Accueil -->
-<SectionFullWidth title="">
-  <div class="grid grid-cols-2 w-full h-full gap-0 max-[800px]:grid-cols-1 max-[800px]:gap-8">
-    <!-- Hero Left -->
-    <div class="flex items-center justify-center p-16 max-[900px]:p-12 max-[800px]:p-8">
-      <div class="max-w-[550px] flex flex-col gap-8 max-[900px]:gap-6 max-[800px]:max-w-full">
-        <h1 class="text-[clamp(2.5rem,8vw,4.5rem)] font-semibold leading-none m-0 text-black max-[1200px]:text-[3.5rem] max-[900px]:text-[3rem] max-[800px]:text-center max-[800px]:text-[2.5rem]">
-          Santé en<br/>
-          <span class="bg-gradient-to-r from-[rgb(255,140,66)] to-[rgba(255,140,66,0.7)] bg-clip-text text-transparent">
-            Franche-Comté
-          </span>
-        </h1>
+    <SectionFullWidth title="">
+      <div class="grid grid-cols-2 w-full h-full gap-0 max-[800px]:grid-cols-1 max-[800px]:gap-8">
+        <!-- Hero Left -->
+        <div class="flex items-center justify-center p-16 max-[900px]:p-12 max-[800px]:p-8">
+          <div class="max-w-[550px] flex flex-col gap-8 max-[900px]:gap-6 max-[800px]:max-w-full">
+            <h1 class="text-[clamp(2.5rem,8vw,4.5rem)] font-semibold leading-none m-0 text-black max-[1200px]:text-[3.5rem] max-[900px]:text-[3rem] max-[800px]:text-center max-[800px]:text-[2.5rem]">
+              Santé en<br/>
+              <span class="bg-gradient-to-r from-[rgb(255,140,66)] to-[rgba(255,140,66,0.7)] bg-clip-text text-transparent">
+                Franche-Comté
+              </span>
+            </h1>
+            
+            <p class="text-[clamp(1rem,3vw,1.5rem)] font-light text-black/70 m-0 max-[1200px]:text-[1.3rem] max-[900px]:text-[1.15rem] max-[800px]:text-center max-[800px]:text-[1rem]">
+              Visualiser l'accès aux professionnels
+            </p>
+            
+            <div class="flex flex-col gap-5 max-[900px]:gap-4">
+              <p class="text-[clamp(0.9rem,2vw,1.05rem)] font-light leading-relaxed text-black/85 m-0 max-[1200px]:text-[0.95rem] max-[900px]:text-[0.9rem] max-[800px]:text-[0.85rem]">
+                Explorez l'accès aux professionnels de santé en Franche-Comté à travers des visualisations interactives, afin de comprendre où l'offre est la plus ou la moins accessible pour les habitants.
+              </p>
+              <p class="text-[clamp(0.9rem,2vw,1.05rem)] font-light leading-relaxed text-black/85 m-0 max-[1200px]:text-[0.95rem] max-[900px]:text-[0.9rem] max-[800px]:text-[0.85rem]">
+                Analysez la quantité de professionnels (médecins généralistes, infirmiers, kinésithérapeutes, sages-femmes) et l'accessibilité potentielle localisée, avant et après la période Covid.
+              </p>
+            </div>
+          </div>
+        </div>
         
-        <p class="text-[clamp(1rem,3vw,1.5rem)] font-light text-black/70 m-0 max-[1200px]:text-[1.3rem] max-[900px]:text-[1.15rem] max-[800px]:text-center max-[800px]:text-[1rem]">
-          Visualiser l'accès aux professionnels
-        </p>
-        
-        <div class="flex flex-col gap-5 max-[900px]:gap-4">
-          <p class="text-[clamp(0.9rem,2vw,1.05rem)] font-light leading-relaxed text-black/85 m-0 max-[1200px]:text-[0.95rem] max-[900px]:text-[0.9rem] max-[800px]:text-[0.85rem]">
-            Explorez l'accès aux professionnels de santé en Franche-Comté à travers des visualisations interactives, afin de comprendre où l'offre est la plus ou la moins accessible pour les habitants.
+        <!-- Hero Right - Video -->
+        <div class="relative overflow-hidden w-full h-full max-[800px]:hidden">
+          <div class="relative w-full h-full">
+          <video class="w-full h-full object-cover object-center block" autoplay loop muted playsinline>
+            <source src="/videos/video_hero_sae303.mp4" type="video/mp4" />
+            Votre navigateur ne supporte pas la vidéo.
+          </video>
+          </div>
+        </div>
+      </div>
+    </SectionFullWidth>
+
+
+    <!-- Page 2 : Carte -->
+    <Section title="Accessibilité aux soins en Franche-Comté">
+      <div slot="left" class="max-[800px]:flex max-[800px]:justify-center">
+        <InteractiveMap dataUrl="/data/communes_fc_colored_dynamic.json" />
+      </div>
+      
+      <!-- REMPLACEZ span-two-cols par col-span-2 + classes Tailwind -->
+      <div class="col-span-2 flex flex-col justify-start gap-2.5 pt-24 max-[1200px]:pt-15 max-[1024px]:pt-1 max-[800px]:col-span-1 max-[800px]:gap-2.5 max-[600px]:gap-2">
+        <!-- Bloc Explication APL -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Qu'est ce que l'APL ?
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            L'<em>indicateur d'accessibilité potentielle localisée</em> (<strong>APL</strong>) a été développé pour mesurer l'adéquation 
+            spatiale entre <strong>l'offre</strong> et <strong>la demande</strong> de soins de premier recours à un échelon géographique fin. 
+            C'est un <strong>indicateur local</strong>, disponible au <em>niveau de chaque commune</em>, qui tient compte de <strong>l'offre</strong> 
+            et de <strong>la demande</strong> issues des communes environnantes. Calculé à l'échelle communale, l'<strong>APL</strong> met en évidence 
+            des disparités d'<em>offre de soins</em> qu'un indicateur usuel de densité, calculé sur des mailles beaucoup plus larges, aurait tendance à 
+            masquer. Il tient également compte du <em>niveau d'activité</em> des professionnels en exercice ainsi que de la <em>structure par âge</em> de 
+            la population de chaque commune qui influence les besoins de soins.
           </p>
-          <p class="text-[clamp(0.9rem,2vw,1.05rem)] font-light leading-relaxed text-black/85 m-0 max-[1200px]:text-[0.95rem] max-[900px]:text-[0.9rem] max-[800px]:text-[0.85rem]">
-            Analysez la quantité de professionnels (médecins généralistes, infirmiers, kinésithérapeutes, sages-femmes) et l'accessibilité potentielle localisée, avant et après la période Covid.
+        </div>
+
+        <!-- Bloc Explication carte -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Explication de la carte
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            Cette carte présente l'accessibilité aux soins en Franche-Comté en 2022, plus précisément pour les professions de <strong>kinésithérapeutes, 
+              infirmiers, sages-femmes et médecins généralistes</strong>, selon l'<em>indice d'accessibilité potentielle localisée (APL)</em>. 
+              Les teintes foncées signalent une bonne accessibilité, concentrée autour des grandes villes comme Besançon, Belfort et Montbéliard, 
+              tandis que les zones plus claires révèlent une pénurie de professionnels dans les territoires ruraux ou montagneux. Ce contraste met en 
+              évidence une forte disparité territoriale entre les zones urbaines bien dotées et les zones rurales souffrant d'un accès limité aux soins 
+              de kinésithérapie.
+          </p>
+        </div>
+
+        <!-- Bloc Sources -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Sources
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            <em>Lien vers la source : <a href="https://data.drees.solidarites-sante.gouv.fr/explore/dataset/530_l-accessibilite-potentielle-localisee-apl/information/" target="_blank" rel="noopener noreferrer" class="text-[rgb(255,140,66)] font-medium no-underline hover:text-[rgb(230,120,50)] hover:underline transition-colors duration-200">data.drees.solidarites-sante.gouv.fr</a></em>
           </p>
         </div>
       </div>
-    </div>
-    
-    <!-- Hero Right - Video -->
-    <div class="relative overflow-hidden w-full h-full max-[800px]:hidden">
-      <div class="relative w-full h-full">
-      <video class="w-full h-full object-cover object-center block" autoplay loop muted playsinline>
-        <source src="/videos/video_hero_sae303.mp4" type="video/mp4" />
-        Votre navigateur ne supporte pas la vidéo.
-      </video>
+    </Section>
+
+    <!-- Page 3 : Carte Leaflet -->
+    <Section title="Répartition des professionnels de santé">
+      <div slot="left" class="pr-20 max-[800px]:pr-0">
+        <LeafletMap />
       </div>
-    </div>
-  </div>
-</SectionFullWidth>
 
-
-<!-- Page 2 : Carte -->
-<Section title="Accessibilité aux soins en Franche-Comté">
-  <div slot="left" class="max-[800px]:flex max-[800px]:justify-center">
-    <InteractiveMap dataUrl="/data/communes_fc_colored_dynamic.json" />
-  </div>
-  
-  <!-- REMPLACEZ span-two-cols par col-span-2 + classes Tailwind -->
-  <div class="col-span-2 flex flex-col justify-start gap-2.5 pt-24 max-[1200px]:pt-15 max-[1024px]:pt-1 max-[800px]:col-span-1 max-[800px]:gap-2.5 max-[600px]:gap-2">
-    <!-- Bloc Explication APL -->
-    <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
-      <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
-        Explication (APL)
-      </h3>
-      <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
-        L'indicateur d'accessibilité potentielle localisée (APL) a été développé pour mesurer l'adéquation spatiale entre l'offre et la demande de soins de premier recours à un échelon géographique fin. C'est un indicateur local, disponible au niveau de chaque commune, qui tient compte de l'offre et de la demande issues des communes environnantes. Calculé à l'échelle communale, l'APL met en évidence des disparités d'offre de soins qu'un indicateur usuel de densité, calculé sur des mailles beaucoup plus larges, aurait tendance à masquer. Il tient également compte du niveau d'activité des professionnels en exercice ainsi que de la structure par âge de la population de chaque commune qui influence les besoins de soins.
-      </p>
-    </div>
-
-    <!-- Bloc Explication carte -->
-    <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
-      <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
-        Explication de la carte & sources
-      </h3>
-      <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
-        Cette carte présente l'accessibilité aux soins en Franche-Comté en 2022, plus précisément pour les professions de kinésithérapeute, infirmiers, sages femmes et médecins généralistes, selon l'indice d'accessibilité potentielle localisée (APL). Les teintes foncées signalent une bonne accessibilité, concentrée autour des grandes villes comme Besançon, Belfort et Montbéliard, tandis que les zones plus claires révèlent une pénurie de professionnels dans les territoires ruraux ou montagneux. Ce contraste met en évidence une forte disparité territoriale entre les zones urbaines bien dotées et les zones rurales souffrant d'un accès limité aux soins de kinésithérapie.
-      </p>
-    </div>
-
-    <!-- Bloc Sources -->
-    <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
-      <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
-        Sources
-      </h3>
-      <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
-        Lien vers la source : <a href="https://data.drees.solidarites-sante.gouv.fr/explore/dataset/530_l-accessibilite-potentielle-localisee-apl/information/" target="_blank" rel="noopener noreferrer" class="text-[rgb(255,140,66)] font-medium no-underline hover:text-[rgb(230,120,50)] hover:underline transition-colors duration-200">data.drees.solidarites-sante.gouv.fr</a>
-      </p>
-    </div>
-  </div>
-</Section>
-
-      <!-- Page 3 : Analyse -->
-      <Section title="Analyse">
-        <div slot="left">
-          <PlotFigure
-            options={{
-              marks: [Plot.dot(penguins, {
-                x: "culmen_length_mm",
-                y: "culmen_depth_mm",
-                stroke: "species",
-              })],
-            }}
-          />
+      <div class="col-span-2 flex flex-col justify-start gap-2.5 pt-24 max-[1200px]:pt-15 max-[800px]:col-span-1 max-[800px]:gap-2.5 max-[600px]:gap-2">
+        <!-- Bloc Explication de la carte -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Lecture de la carte
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            Cette carte interactive présente la <strong>densité des professionnels de santé libéraux</strong> en Franche-Comté au <em>31 décembre 2022</em>. 
+            Contrairement à l'<strong>indicateur APL</strong> qui mesure l'<em>accessibilité théorique aux soins</em>, cette visualisation met en 
+            évidence la répartition géographique effective des praticiens par commune. La taille des cercles est proportionnelle au nombre de 
+            professionnels présents localement, révélant ainsi les zones de forte concentration et les déserts médicaux potentiels.
+          </p>
         </div>
+
+        <!-- Bloc Analyse -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Analyse territoriale
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            Les concentrations majeures se situent dans les <strong>pôles urbains</strong> comme <strong>Besançon, Belfort et Montbéliard</strong>, où 
+            les cercles volumineux témoignent d'une <em>offre de soins abondante</em>. En revanche, les <em>zones rurales et montagneuses</em> présentent 
+            des cercles nettement plus petits, voire inexistants, signalant une faible présence de professionnels. Cette disparité est particulièrement 
+            marquée pour les <strong>sages-femmes</strong>, dont le nombre est très faible. Les <strong>médecins généralistes</strong> sont 
+            très <em>urbano-centrés</em>, alors que les <strong>infirmiers</strong> affichent une distribution plus homogène sur le territoire.
+          </p>
+        </div>
+
+        <!-- Bloc Sources -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Sources
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            Données issues de CartoSanté / AtlasSanté, qui propose plus de 300 indicateurs territorialisés sur l'offre de soins libérale en France. Lien : <a href="https://cartosante.atlasante.fr/#bbox=208361,6162082,837779,500147&c=indicator&f=0&i=kine_popage.eft&s=2022&t=A01&view=map26" target="_blank" rel="noopener noreferrer" class="text-[rgb(255,140,66)] font-medium no-underline hover:text-[rgb(230,120,50)] hover:underline transition-colors duration-200">cartosante.atlasante.fr</a>
+          </p>
+        </div>
+      </div>
+    </Section>
+
+    <!-- Page 4 : Comparaison -->
+    <SectionFullWidth title="Totaux des médecins & comparaison des APL pré et post Covid">
+      <div class="w-full h-full flex flex-col gap-3 p-2 max-[800px]:p-6 max-[800px]:gap-2">
         
-        <div class="span-two-cols">
-          <p>Lorem ipsum dolor sit amet.</p>
-          <p>Vestibulum tortor quam.</p>
+        <!-- Les 2 graphiques côte à côte -->
+        <div class="grid grid-cols-2 gap-6 w-full max-[800px]:grid-cols-1 max-[800px]:gap-4">
+          <BarchartProfessionnelsTotal />
+          <BarchartAplTotal />
         </div>
-      </Section>
+
+        <!-- Les explications en dessous - GAP RÉDUIT -->
+        <div class="grid grid-cols-2 gap-6 w-full max-[800px]:grid-cols-1 max-[800px]:gap-4">
+          <!-- Explication graphique 1 -->
+          <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+            <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+              Répartition des effectifs médicaux
+            </h3>
+            <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+              Les <strong>infirmiers</strong> constituent le contingent le plus élevé, devant les <strong>kinésithérapeutes</strong> et les <strong>médecins généralistes</strong>, avec un effectif de <strong>sages-femmes</strong> nettement plus réduit. Cette structure d'effectifs suggère une <em>offre paramédicale relativement dense</em>, mais n'informe pas à elle seule sur la facilité d'accès pour les habitants. Elle révèle toutefois l'importance du personnel infirmier dans le système de soins de premier recours en Franche-Comté.
+            </p>
+          </div>
+
+          <!-- Explication graphique 2 -->
+          <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+            <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+              Évolution de l'accessibilité (2016-2022)
+            </h3>
+            <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 text-justify m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+              L'<strong>APL</strong> traduit le nombre de <em>consultations ou visites accessibles par habitant</em>, en tenant compte de l'activité des professionnels, de la structure par âge et du temps d'accès intercommunal. Selon les millésimes récents, l'<em>accessibilité s'est tendue</em> pour les <strong>médecins généralistes</strong> et les <strong>infirmiers</strong> alors qu'elle s'est plutôt <em>améliorée</em> pour les <strong>kinésithérapeutes</strong> et les <strong>sages-femmes</strong> au niveau national, ce qui éclaire des contrastes possibles dans la région.
+            </p>
+          </div>
+        </div>
+
+        <!-- Sources en pleine largeur -->
+        <div class="bg-white/5 p-3.5 rounded-lg border-l-[3px] border-[rgb(255,140,66)] max-[800px]:p-3 max-[600px]:p-2">
+          <h3 class="text-[1.2rem] font-semibold text-black mb-1.5 max-[800px]:text-sm max-[800px]:mb-1 max-[600px]:text-xs">
+            Sources
+          </h3>
+          <p class="text-[1.1rem] max-[1600px]:text-[0.85rem] leading-[1.35] text-black/85 m-0 tracking-[-0.05em] max-[800px]:text-[0.72rem] max-[800px]:leading-[1.3] max-[600px]:text-[0.68rem]">
+            Données issues de CartoSanté / AtlasSanté et de la DREES. Liens : <a href="https://cartosante.atlasante.fr" target="_blank" rel="noopener noreferrer" class="text-[rgb(255,140,66)] font-medium no-underline hover:text-[rgb(230,120,50)] hover:underline transition-colors duration-200">cartosante.atlasante.fr</a>
+          </p>
+        </div>
+
+      </div>
+    </SectionFullWidth>
 
 
-      <!-- Page 4 : Conclusion -->
-      <Section title="Conclusion">
-        <p>Merci d'avoir exploré nos données !</p>
-      </Section>
 
+    <!-- Page 5 : Conclusion -->
+    <SectionFullWidth title="Conclusion">
+      <div class="w-full h-full flex flex-col gap-6 p-12 max-[1024px]:p-8 max-[800px]:p-6 max-[800px]:gap-4 overflow-y-auto">
+        
+        <!-- Introduction -->
+        <div class="bg-white p-6 rounded-xl border-l-4 border-[rgb(255,140,66)] max-[800px]:p-4">
+          <h2 class="text-[1.5rem] font-bold text-black mb-3 max-[1024px]:text-[1.3rem] max-[800px]:text-[1.1rem] max-[800px]:mb-2">
+            Accessibilité aux professionnels de santé en Franche-Comté
+          </h2>
+          <p class="text-[1.05rem] leading-relaxed text-black/85 max-[1024px]:text-[0.95rem] max-[800px]:text-[0.85rem]">
+            L'analyse des données de 2022 montre des <strong>contrastes marqués</strong> entre les différentes professions :
+          </p>
+        </div>
 
-      <!-- Page 5 : Contact -->
-      <Section title="Contact">
-        <p>Retrouvez plus d'informations sur notre projet.</p>
-      </Section>
+        <!-- Grid des professions -->
+        <div class="grid grid-cols-3 gap-4 max-[1024px]:grid-cols-1 max-[1024px]:gap-3">
+          <!-- Infirmiers et kinés -->
+          <div class="bg-white/60 backdrop-blur-sm p-5 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow max-[800px]:p-4">
+            <div class="flex items-center gap-2 mb-3 max-[800px]:mb-2">
+              <div class="w-3 h-3 rounded-full bg-[#4ECDC4]"></div>
+              <h3 class="text-[1.15rem] font-semibold text-black max-[1024px]:text-[1.05rem] max-[800px]:text-[0.95rem]">
+                Infirmiers et kinésithérapeutes
+              </h3>
+            </div>
+            <p class="text-[0.95rem] leading-relaxed text-black/80 max-[1024px]:text-[0.9rem] max-[800px]:text-[0.8rem]">
+              Leur nombre est <strong>relativement élevé</strong> et leur accessibilité est <em>bonne</em>, comme le montre la moyenne élevée des indices d'APL. Ces professionnels sont présents sur une grande partie du territoire, ce qui garantit un accès assez homogène pour la population.
+            </p>
+          </div>
+          <!-- Médecins généralistes -->
+          <div class="bg-white/60 backdrop-blur-sm p-5 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow max-[800px]:p-4">
+            <div class="flex items-center gap-2 mb-3 max-[800px]:mb-2">
+              <div class="w-3 h-3 rounded-full bg-[#ED7D31]"></div>
+              <h3 class="text-[1.15rem] font-semibold text-black max-[1024px]:text-[1.05rem] max-[800px]:text-[0.95rem]">
+                Médecins généralistes
+              </h3>
+            </div>
+            <p class="text-[0.95rem] leading-relaxed text-black/80 max-[1024px]:text-[0.9rem] max-[800px]:text-[0.8rem]">
+              Bien qu'ils soient presque aussi nombreux que les kinésithérapeutes, leur accessibilité est <strong>très faible</strong> (score d'APL ~5 000, contre 150 000 pour les infirmiers). Cette situation s'explique par le fait que les médecins généralistes sont principalement regroupés dans les <em>grandes villes</em>. Les habitants des zones rurales ont donc beaucoup plus de difficulté à y accéder, ce qui <strong>concentre les inégalités</strong>.
+            </p>
+          </div>
+          <!-- Sages-femmes -->
+          <div class="bg-white/60 backdrop-blur-sm p-5 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow max-[800px]:p-4">
+            <div class="flex items-center gap-2 mb-3 max-[800px]:mb-2">
+              <div class="w-3 h-3 rounded-full bg-[#70AD47]"></div>
+              <h3 class="text-[1.15rem] font-semibold text-black max-[1024px]:text-[1.05rem] max-[800px]:text-[0.95rem]">
+                Sages-femmes
+              </h3>
+            </div>
+            <p class="text-[0.95rem] leading-relaxed text-black/80 max-[1024px]:text-[0.9rem] max-[800px]:text-[0.8rem]">
+              Leur nombre est <strong>faible</strong>, mais elles sont néanmoins <em>plus accessibles</em> que les médecins généralistes (score d'APL ~26 440). Cette accessibilité supérieure peut s'expliquer par une répartition plus équitable sur le territoire et par une demande relativement plus faible comparée à celle des médecins généralistes.
+            </p>
+          </div>
+        </div>
+
+        <!-- Comparaison 2016-2022 -->
+        <div class="p-6 rounded-xl border-l-4 border-[rgb(255,140,66)] max-[800px]:p-4">
+          <h2 class="text-[1.5rem] font-bold text-black mb-3 max-[1024px]:text-[1.3rem] max-[800px]:text-[1.1rem] max-[800px]:mb-2">
+            Comparaison 2016 - 2022 : tendances pré et post COVID
+          </h2>
+          <p class="text-[1.05rem] leading-relaxed text-black/85 mb-4 max-[1024px]:text-[0.95rem] max-[800px]:text-[0.85rem] max-[800px]:mb-3">
+            L'analyse des données de 2016 permet de mettre en perspective l'évolution des professions de santé dans la région :
+          </p>
+          <ul class="space-y-3 max-[800px]:space-y-2">
+            <li class="flex gap-3 text-[0.95rem] leading-relaxed text-black/80 max-[1024px]:text-[0.9rem] max-[800px]:text-[0.8rem]">
+              <span><strong>Infirmiers et kinésithérapeutes :</strong> Leur accessibilité a <em>légèrement augmenté</em> depuis 2016, 
+                ce qui traduit un renforcement des soins de proximité, probablement renforcé par les besoins apparus pendant la pandémie.</span>
+            </li>
+            <li class="flex gap-3 text-[0.95rem] leading-relaxed text-black/80 max-[1024px]:text-[0.9rem] max-[800px]:text-[0.8rem]">
+              <span><strong>Sages-femmes :</strong> Leur accessibilité s'est <em>améliorée</em>, même si leur nombre reste faible, grâce à une 
+                répartition plus équilibrée sur le territoire et à une demande moins concentrée que pour les médecins.</span>
+            </li>
+            <li class="flex gap-3 text-[0.95rem] leading-relaxed text-black/80 max-[1024px]:text-[0.9rem] max-[800px]:text-[0.8rem]">
+              <span><strong>Médecins généralistes :</strong> La situation reste <em>problématique</em>, avec une concentration dans les grandes 
+                villes qui rend l'accès difficile pour les habitants des zones rurales.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Résumé final -->
+        <div class="bg-black/5 p-6 rounded-xl border-2 border-black/10 max-[800px]:p-4">
+          <p class="text-[1.05rem] font-medium leading-relaxed text-black text-center max-[1024px]:text-[0.95rem] max-[800px]:text-[0.85rem]">
+            <strong>En résumé :</strong> Entre 2016 et 2022, les professions paramédicales deviennent légèrement plus accessibles, tandis que 
+            les <strong>inégalités d'accès aux médecins généralistes persistent</strong>, soulignant l'importance d'une meilleure couverture 
+            territoriale pour répondre aux besoins de toute la population.
+          </p>
+        </div>
+
+        <!-- Footer avec auteurs -->
+        <div class="mt-auto pt-6 border-t-2 border-gray-200 max-[800px]:pt-4">
+          <div class="text-center">
+            <p class="text-[0.9rem] text-black/60 mb-1 max-[800px]:text-[0.8rem]">
+              Travail réalisé par
+            </p>
+            <p class="text-[1.2rem] font-bold text-black mb-2 max-[1024px]:text-[1.1rem] max-[800px]:text-[1rem]">
+              Léo Baudry et Arthur Wicky
+            </p>
+            <p class="text-[0.85rem] text-black/50 max-[800px]:text-[0.75rem]">
+              Étudiants au BUT MMI de Montbéliard
+            </p>
+          </div>
+        </div>
+      </SectionFullWidth>
     </div>
   </div>
 
-  <!-- Modal HORS de .horizontal-sections pour éviter le problème de transform -->
+  <!-- Modal CARTE 1  -->
   <div id="map-modal" class="map-modal" style="display: none;">
     <div class="map-modal-overlay"></div>
     <div class="map-modal-content">
@@ -142,6 +317,60 @@ import * as Plot from "@observablehq/plot";
       <div class="map-modal-content-inner"></div>
     </div>
   </div>
+<!-- Modal CARTE 2 (Leaflet) -->
+<div id="leaflet-modal" class="map-modal" style="display: none;">
+  <div class="map-modal-overlay"></div>
+  <div class="map-modal-content">
+    <button class="map-modal-close" id="close-leaflet-modal">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="map-modal-content-inner" id="leaflet-modal-content">
+      <!-- La carte large sera insérée ici -->
+    </div>
+  </div>
+</div>
+
+<!-- Pop-up de navigation (uniquement desktop) -->
+<div id="nav-tooltip" class="fixed bottom-6 left-8 bg-white/95 backdrop-blur-lg shadow-2xl rounded-xl px-6 py-5 z-[2000] border border-gray-200 transition-all duration-500 max-[1024px]:hidden">
+  <button id="close-tooltip" class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors z-10">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+  
+  <div class="flex flex-col gap-3">
+    <!-- Texte du haut avec icône -->
+    <div class="flex items-center gap-3">
+      <div>
+        <h3 class="text-base font-semibold text-black mb-0.5">Navigation</h3>
+        <p class="text-xs text-gray-600">Explorez les données de plusieurs façons :</p>
+      </div>
+    </div>
+    
+    <!-- Les 3 indications en ligne -->
+    <div class="flex items-center gap-6 text-sm text-gray-700">
+      <div class="flex items-center gap-2">
+        <span class="text-[rgb(255,140,66)] font-bold text-lg">↓</span>
+        <span>Scrollez</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-bold">🖱️</span>
+        <span>Glissez</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-bold">🔢</span>
+        <span>Menu</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </Layout>
 
 
@@ -151,11 +380,62 @@ import * as Plot from "@observablehq/plot";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
-
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-
   document.addEventListener("DOMContentLoaded", () => {
+    
+    // Gestion du pop-up de navigation (sans localStorage)
+    const tooltip = document.getElementById('nav-tooltip');
+    const closeBtn = document.getElementById('close-tooltip');
+
+    if (tooltip) {
+      // Afficher le tooltip après un court délai
+      setTimeout(() => {
+        tooltip.style.display = 'block';
+        tooltip.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+          tooltip.style.opacity = '1';
+          tooltip.style.transform = 'translateY(0)';
+        }, 100);
+      }, 1000);
+
+      const hideTooltip = () => {
+        if (tooltip) {
+          tooltip.style.opacity = '0';
+          tooltip.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            tooltip.style.display = 'none';
+          }, 300);
+        }
+      };
+
+      // Fermeture manuelle avec le bouton
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          hideTooltip();
+        });
+      }
+
+      // Auto-fermeture après 8 secondes
+      setTimeout(hideTooltip, 8000);
+
+      // Fermeture au premier scroll ou drag
+      let hasInteracted = false;
+      const onInteraction = () => {
+        if (!hasInteracted) {
+          hasInteracted = true;
+          hideTooltip();
+        }
+      };
+
+      window.addEventListener('scroll', onInteraction, { once: true });
+      document.addEventListener('mousedown', onInteraction, { once: true });
+    }
+
+    // Reste du code GSAP
     requestAnimationFrame(() => {
       const sections = gsap.utils.toArray(".panel");
       const container = document.querySelector(".horizontal-sections");
@@ -168,9 +448,7 @@ import * as Plot from "@observablehq/plot";
         return;
       }
 
-
       console.log(`${sections.length} sections détectées`);
-
 
       gsap.from(".hero-content > *", {
         opacity: 0,
@@ -181,7 +459,6 @@ import * as Plot from "@observablehq/plot";
         delay: 0.3
       });
 
-
       gsap.from(".hero-image-container", {
         opacity: 0,
         scale: 0.95,
@@ -189,7 +466,6 @@ import * as Plot from "@observablehq/plot";
         ease: "power2.out",
         delay: 0.5
       });
-
 
       function updatePageIndicators(currentIndex: number) {
         pageBtns.forEach((btn, index) => {
@@ -200,7 +476,6 @@ import * as Plot from "@observablehq/plot";
           }
         });
       }
-
 
       const tween = gsap.to(container, {
         x: () => `-${container.scrollWidth - window.innerWidth}px`,
@@ -221,33 +496,27 @@ import * as Plot from "@observablehq/plot";
         },
       });
 
-
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, 100);
 
-
       let isNavigating = false;
 
-
       function goToSection(index: number) {
-              if (isNavigating) return;
-              isNavigating = true;
-      
-      
-              const progress = index / (sections.length - 1);
-              const targetScroll = progress * (document.documentElement.scrollHeight - window.innerHeight);
-      
-      
-              gsap.to(window, {
-                scrollTo: { y: targetScroll, autoKill: true },
-                duration: 0.8,
-                ease: "power2.inOut",
-                onComplete: () => { isNavigating = false; },
-                onInterrupt: () => { isNavigating = false; },
-              });
-            }
+        if (isNavigating) return;
+        isNavigating = true;
 
+        const progress = index / (sections.length - 1);
+        const targetScroll = progress * (document.documentElement.scrollHeight - window.innerHeight);
+
+        gsap.to(window, {
+          scrollTo: { y: targetScroll, autoKill: true },
+          duration: 0.8,
+          ease: "power2.inOut",
+          onComplete: () => { isNavigating = false; },
+          onInterrupt: () => { isNavigating = false; },
+        });
+      }
 
       prevBtn.addEventListener("click", () => {
         const currentProgress = tween.scrollTrigger?.progress ?? 0;
@@ -257,7 +526,6 @@ import * as Plot from "@observablehq/plot";
         }
       });
 
-
       nextBtn.addEventListener("click", () => {
         const currentProgress = tween.scrollTrigger?.progress ?? 0;
         const currentSection = Math.round(currentProgress * (sections.length - 1));
@@ -266,7 +534,6 @@ import * as Plot from "@observablehq/plot";
         }
       });
 
-
       pageBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
           const pageIndex = parseInt(btn.getAttribute("data-page") ?? "0", 10);
@@ -274,11 +541,17 @@ import * as Plot from "@observablehq/plot";
         });
       });
 
-
       let startX: number, startScroll: number, isDragging = false;
       
-      const onDragStart = (e: { target: { closest: (arg0: string) => any; }; clientX: any; touches: { clientX: any; }[]; }) => {
-        if (e.target.closest(".arrow-btn") || e.target.closest(".page-btn")) return;
+      const onDragStart = (e: { target: any; clientX: any; touches: { clientX: any; }[]; }) => {
+        if (
+          e.target.closest(".arrow-btn") || 
+          e.target.closest(".page-btn") ||
+          e.target.closest("#map-leaflet") ||           
+          e.target.closest(".leaflet-container") ||
+          e.target.closest("#nav-tooltip")
+        ) return;
+        
         isDragging = true;
         startX = e.clientX || e.touches[0].clientX;
         startScroll = window.scrollY;
@@ -298,12 +571,10 @@ import * as Plot from "@observablehq/plot";
         document.body.classList.remove("grabbing");
       };
 
-
       document.addEventListener("mousedown", onDragStart);
       document.addEventListener("mousemove", onDragMove);
       document.addEventListener("mouseup", onDragEnd);
       document.addEventListener("mouseleave", onDragEnd);
-
 
       document.addEventListener("touchstart", onDragStart, { passive: true });
       document.addEventListener("touchmove", onDragMove, { passive: false });

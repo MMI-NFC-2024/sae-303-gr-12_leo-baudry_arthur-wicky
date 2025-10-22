@@ -2,13 +2,16 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 
-const baseUrl = "https://votre-domaine.fr"; // À remplacer par ton vrai domaine
+const baseUrl = "https://votre-domaine.fr";
 const pageUrl = baseUrl;
 const siteName = "Santé en Franche-Comté";
 const title = "Accessibilité aux soins en Franche-Comté | Visualisation interactive des professionnels de santé";
 const description = "Explorez l'accès aux professionnels de santé en Franche-Comté (2016-2022) : cartes interactives APL, densité médicale par commune, statistiques médecins, infirmiers, kinésithérapeutes et sages-femmes. Analyse pré et post-COVID.";
+const twitterDescription = "🏥 Cartes interactives de l'accessibilité aux soins en Franche-Comté (2016-2022) : médecins, infirmiers, kinés, sages-femmes. Analyse pré/post-COVID 📊"; // Summary pour Twitter
 const image = "/og-image.jpg";
 const keywords = "santé Franche-Comté, accessibilité soins, APL, professionnels santé, médecins généralistes Besançon, infirmiers Montbéliard, kinésithérapeutes Belfort, sages-femmes Doubs, carte santé interactive, densité médicale, déserts médicaux, COVID santé, 2016 2022, données santé France, visualisation données médicales";
+const publishedDate = "2025-10-22T00:00:00+00:00"; 
+const modifiedDate = new Date().toISOString();
 ---
 <!DOCTYPE html>
 <html lang="fr">
@@ -34,16 +37,39 @@ const keywords = "santé Franche-Comté, accessibilité soins, APL, professionne
     <meta property="og:image" content={`${baseUrl}${image}`}>
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Carte interactive de l'accessibilité aux soins en Franche-Comté avec statistiques des professionnels de santé">
+    <meta property="og:image:secure_url" content={`${baseUrl}${image}`}>
     <meta property="og:url" content={pageUrl}>
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:site_name" content={siteName}>
 
-    <!-- Twitter Card -->
+    <!-- Article Meta (dates de publication) -->
+    <meta property="article:published_time" content={publishedDate}>
+    <meta property="article:modified_time" content={modifiedDate}>
+    <meta property="article:author" content="Léo Baudry">
+    <meta property="article:author" content="Arthur Wicky">
+    <meta property="article:section" content="Santé">
+    <meta property="article:tag" content="Santé">
+    <meta property="article:tag" content="Franche-Comté">
+    <meta property="article:tag" content="Accessibilité aux soins">
+    <meta property="article:tag" content="APL">
+    <meta property="article:tag" content="COVID-19">
+
+    <!-- LinkedIn spécifique -->
+    <meta property="og:see_also" content="https://data.drees.solidarites-sante.gouv.fr">
+    <meta property="og:see_also" content="https://cartosante.atlasante.fr">
+
+    <!-- Twitter Card (avec summary plus court) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content={title}>
-    <meta name="twitter:description" content={description}>
+    <meta name="twitter:description" content={twitterDescription}>
     <meta name="twitter:image" content={`${baseUrl}${image}`}>
+    <meta name="twitter:image:alt" content="Carte interactive santé Franche-Comté">
+    <meta name="twitter:label1" content="Période">
+    <meta name="twitter:data1" content="2016-2022">
+    <meta name="twitter:label2" content="Région">
+    <meta name="twitter:data2" content="Franche-Comté">
 
     <!-- Canonical URL -->
     <link rel="canonical" href={pageUrl}>
@@ -86,14 +112,10 @@ const keywords = "santé Franche-Comté, accessibilité soins, APL, professionne
         ],
         "publisher": {
           "@type": "EducationalOrganization",
-          "name": "BUT MMI Montbéliard",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Montbéliard",
-            "addressRegion": "Bourgogne-Franche-Comté",
-            "addressCountry": "FR"
-          }
-        }
+          "name": "BUT MMI Montbéliard"
+        },
+        "datePublished": "${publishedDate}",
+        "dateModified": "${modifiedDate}"
       }
     </script>
 
@@ -103,23 +125,13 @@ const keywords = "santé Franche-Comté, accessibilité soins, APL, professionne
         "@context": "https://schema.org",
         "@type": "Dataset",
         "name": "Accessibilité aux soins en Franche-Comté (2016-2022)",
-        "description": "Données sur l'accessibilité potentielle localisée (APL) et la densité des professionnels de santé libéraux en Franche-Comté : médecins généralistes, infirmiers, kinésithérapeutes et sages-femmes",
+        "description": "Données sur l'accessibilité potentielle localisée (APL) et la densité des professionnels de santé libéraux en Franche-Comté",
         "url": "${baseUrl}",
-        "keywords": ["APL", "accessibilité aux soins", "Franche-Comté", "professionnels de santé", "densité médicale", "2016", "2022", "COVID-19"],
-        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "keywords": ["APL", "accessibilité aux soins", "Franche-Comté", "professionnels de santé", "2016", "2022", "COVID-19"],
         "temporalCoverage": "2016/2022",
         "spatialCoverage": {
           "@type": "Place",
-          "name": "Franche-Comté",
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 47.0,
-            "longitude": 6.0
-          },
-          "containedInPlace": {
-            "@type": "Country",
-            "name": "France"
-          }
+          "name": "Franche-Comté"
         },
         "creator": [
           {
@@ -129,13 +141,6 @@ const keywords = "santé Franche-Comté, accessibilité soins, APL, professionne
           {
             "@type": "Person",
             "name": "Arthur Wicky"
-          }
-        ],
-        "distribution": [
-          {
-            "@type": "DataDownload",
-            "encodingFormat": "application/json",
-            "contentUrl": "${baseUrl}/data/data_fc.json"
           }
         ],
         "isBasedOn": [
@@ -148,22 +153,6 @@ const keywords = "santé Franche-Comté, accessibilité soins, APL, professionne
             "@type": "Dataset",
             "name": "DREES - Accessibilité potentielle localisée",
             "url": "https://data.drees.solidarites-sante.gouv.fr"
-          }
-        ]
-      }
-    </script>
-
-    <!-- Schema.org - BreadcrumbList (optionnel mais aide le SEO) -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Accueil",
-            "item": "${baseUrl}"
           }
         ]
       }
